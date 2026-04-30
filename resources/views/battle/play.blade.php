@@ -9,11 +9,16 @@
 			display: flex;
 			flex-direction: column;
 			gap: 0.85rem;
-			padding: 0.4rem;
+			padding: 7rem 0.5rem 0.5rem;
 			overflow: hidden;
 		}
 
 		.play-score-header {
+			position: fixed;
+			top: 16px;
+			left: 32px;
+			right: 32px;
+			z-index: 1200;
 			background: #020202;
 			border-radius: 0 0 22px 22px;
 			padding: 1rem 1.5rem;
@@ -22,6 +27,7 @@
 			align-items: center;
 			gap: 1rem;
 			min-height: 72px;
+			box-shadow: 0 16px 30px rgba(0, 0, 0, 0.32);
 		}
 
 		.play-score-side {
@@ -68,7 +74,7 @@
 		}
 
 		.play-phase-dock {
-			width: min(780px, calc(100% - 2rem));
+			width: min(780px, calc(100% - 1rem));
 			background: #353535;
 			border-radius: 999px;
 			padding: 0.8rem 1rem;
@@ -114,37 +120,13 @@
 			flex: 1;
 			min-height: 0;
 			display: grid;
-			grid-template-columns: 118px minmax(0, 1fr) 126px;
+			grid-template-columns: minmax(0, 1fr) 138px;
 			grid-template-rows: minmax(0, 1fr) 150px;
 			gap: 0.9rem;
 		}
 
-		.play-left-rail {
-			grid-row: 1 / 2;
-			background: #8c8b00;
-			border: 1px solid rgba(0, 0, 0, 0.22);
-			padding: 0.75rem;
-			display: grid;
-			grid-template-rows: 1fr 1fr;
-			gap: 0.75rem;
-		}
-
-		.play-rail-box {
-			border: 1px dashed rgba(255, 255, 255, 0.28);
-			background: rgba(0, 0, 0, 0.12);
-			color: #f5f4c2;
-			font-size: 0.76rem;
-			font-weight: 700;
-			text-transform: uppercase;
-			display: flex;
-			align-items: center;
-			justify-content: center;
-			text-align: center;
-			padding: 0.5rem;
-		}
-
 		.play-battlefield {
-			grid-column: 2 / 3;
+			grid-column: 1 / 2;
 			grid-row: 1 / 2;
 			background: #575757;
 			padding: 1rem;
@@ -159,6 +141,8 @@
 			background: rgba(0, 0, 0, 0.14);
 			padding: 0.75rem;
 			min-height: 0;
+			display: flex;
+			flex-direction: column;
 		}
 
 		.play-field-row-header {
@@ -177,30 +161,26 @@
 			color: #ececec;
 		}
 
-		.play-field-slots {
-			display: grid;
-			grid-template-columns: repeat(5, minmax(0, 1fr));
-			gap: 0.7rem;
-			height: calc(100% - 1.6rem);
-		}
-
-		.play-slot,
+		.play-free-zone,
 		.play-middle-zone {
 			position: relative;
 			border: 1px dashed rgba(255, 255, 255, 0.22);
 			background: rgba(255, 255, 255, 0.03);
 			min-height: 96px;
+			flex: 1;
+			padding: 0.55rem;
+			overflow: hidden;
+		}
+
+		.play-middle-zone {
 			display: flex;
 			align-items: center;
 			justify-content: center;
-			text-align: center;
-			color: rgba(255, 255, 255, 0.7);
-			font-size: 0.8rem;
-			padding: 0.35rem;
 		}
 
-		.play-slot.can-drop,
-		.play-middle-zone.can-drop {
+		.play-free-zone.can-drop,
+		.play-middle-zone.can-drop,
+		.play-pile-box.can-drop {
 			border-color: rgba(212, 169, 79, 0.72);
 			background: rgba(212, 169, 79, 0.12);
 		}
@@ -212,7 +192,7 @@
 		}
 
 		.play-right-rail {
-			grid-column: 3 / 4;
+			grid-column: 2 / 3;
 			grid-row: 1 / 2;
 			display: grid;
 			grid-template-rows: 108px 108px minmax(0, 1fr);
@@ -255,7 +235,7 @@
 
 		.play-pile-preview img,
 		.play-card img,
-		.play-slot-card img,
+		.play-zone-card img,
 		.play-attachment img,
 		.play-deck-thumb img {
 			width: 100%;
@@ -296,7 +276,7 @@
 		}
 
 		.play-hand-panel {
-			grid-column: 2 / 3;
+			grid-column: 1 / 2;
 			grid-row: 2 / 3;
 			background: #393939;
 			padding: 0.85rem 1rem;
@@ -310,13 +290,18 @@
 			min-height: 118px;
 		}
 
-		.play-card {
+		.play-card,
+		.play-zone-card {
 			position: relative;
-			flex: 0 0 92px;
+			width: 92px;
 			height: 126px;
 			border: 1px solid rgba(255, 255, 255, 0.1);
 			background: rgba(255, 255, 255, 0.04);
 			overflow: hidden;
+		}
+
+		.play-card {
+			flex: 0 0 92px;
 			cursor: grab;
 		}
 
@@ -332,14 +317,12 @@
 			text-transform: uppercase;
 		}
 
-		.play-slot-card {
-			width: 100%;
-			height: 100%;
-			position: relative;
-			overflow: hidden;
+		.play-zone-card {
+			position: absolute;
+			flex: 0 0 auto;
 		}
 
-		.play-slot-stack {
+		.play-zone-stack {
 			position: absolute;
 			left: 0.2rem;
 			right: 0.2rem;
@@ -357,18 +340,32 @@
 		}
 
 		.play-empty-text {
+			position: absolute;
+			inset: 0;
+			display: flex;
+			align-items: center;
+			justify-content: center;
 			padding: 0.4rem;
+			text-align: center;
+			color: rgba(255, 255, 255, 0.72);
 		}
 
 		@media (max-width: 1199.98px) {
 			.play-board-layout {
-				grid-template-columns: 92px 1fr 112px;
+				grid-template-columns: minmax(0, 1fr) 112px;
 			}
 		}
 
 		@media (max-width: 991.98px) {
 			.play-page {
+				padding-top: 1rem;
 				overflow: auto;
+			}
+
+			.play-score-header {
+				position: static;
+				left: auto;
+				right: auto;
 			}
 
 			.play-score-header,
@@ -378,10 +375,9 @@
 
 			.play-board-layout {
 				grid-template-columns: 1fr;
-				grid-template-rows: auto auto auto auto;
+				grid-template-rows: auto auto auto;
 			}
 
-			.play-left-rail,
 			.play-battlefield,
 			.play-right-rail,
 			.play-hand-panel {
@@ -394,7 +390,6 @@
 				grid-template-rows: none;
 			}
 
-			.play-field-slots,
 			.play-middle-row {
 				grid-template-columns: 1fr;
 			}
@@ -445,30 +440,21 @@
 		</div>
 
 		<div class="play-board-layout">
-			<aside class="play-left-rail">
-				<div class="play-rail-box" id="leftDiscardBox">Descarte</div>
-				<div class="play-rail-box" id="leftExileBox">Exílio</div>
-			</aside>
-
 			<section class="play-battlefield">
 				<div class="play-field-row">
 					<div class="play-field-row-header">
 						<div class="play-field-title">Campo do oponente</div>
 					</div>
-					<div class="play-field-slots">
-						<div class="play-slot"><div class="play-empty-text">Criatura</div></div>
-						<div class="play-slot"><div class="play-empty-text">Criatura</div></div>
-						<div class="play-slot"><div class="play-empty-text">Criatura</div></div>
-						<div class="play-slot"><div class="play-empty-text">Criatura</div></div>
-						<div class="play-slot"><div class="play-empty-text">Criatura</div></div>
+					<div class="play-free-zone" id="opponentFieldZone">
+						<div class="play-empty-text">Área unificada do campo do oponente.</div>
 					</div>
 				</div>
 
 				<div class="play-middle-row">
-					<div class="play-middle-zone drop-zone" data-zone="scenario">
+					<div class="play-middle-zone drop-zone" data-zone="scenario" id="scenarioZone">
 						<div class="play-empty-text">Cenário em campo</div>
 					</div>
-					<div class="play-middle-zone drop-zone" data-zone="command">
+					<div class="play-middle-zone drop-zone" data-zone="command" id="commandZone">
 						<div class="play-empty-text">Comando ativo → descarte</div>
 					</div>
 				</div>
@@ -476,26 +462,22 @@
 				<div class="play-field-row">
 					<div class="play-field-row-header">
 						<div class="play-field-title">Seu campo</div>
-						<div class="small text-light-emphasis">Arraste criaturas para o campo e anexe itens/habilidades.</div>
+						<div class="small text-light-emphasis">Solte a carta em qualquer posição da área.</div>
 					</div>
-					<div class="play-field-slots">
-						<div class="play-slot drop-zone" data-zone="creature"><div class="play-empty-text">Criatura 1</div></div>
-						<div class="play-slot drop-zone" data-zone="creature"><div class="play-empty-text">Criatura 2</div></div>
-						<div class="play-slot drop-zone" data-zone="creature"><div class="play-empty-text">Criatura 3</div></div>
-						<div class="play-slot drop-zone" data-zone="creature"><div class="play-empty-text">Criatura 4</div></div>
-						<div class="play-slot drop-zone" data-zone="creature"><div class="play-empty-text">Criatura 5</div></div>
+					<div class="play-free-zone drop-zone" data-zone="creature" id="playerFieldZone">
+						<div class="play-empty-text">Área unificada para criaturas, itens e habilidades.</div>
 					</div>
 				</div>
 			</section>
 
 			<aside class="play-right-rail">
-				<div class="play-pile-box">
+				<div class="play-pile-box drop-zone" data-zone="discard" id="discardZone">
 					<div class="play-pile-title">Descarte</div>
 					<div class="play-pile-preview" id="discardPreview"></div>
 					<div class="play-pile-count" id="discardCount">0</div>
 				</div>
 
-				<div class="play-pile-box">
+				<div class="play-pile-box drop-zone" data-zone="exile" id="exileZone">
 					<div class="play-pile-title">Exílio</div>
 					<div class="play-pile-preview" id="exilePreview"></div>
 					<div class="play-pile-count" id="exileCount">0</div>
@@ -539,9 +521,10 @@
 			const exilePreview = document.getElementById('exilePreview');
 			const discardCount = document.getElementById('discardCount');
 			const exileCount = document.getElementById('exileCount');
-			const leftDiscardBox = document.getElementById('leftDiscardBox');
-			const leftExileBox = document.getElementById('leftExileBox');
 			const turnFlag = document.getElementById('turnFlag');
+			const playerFieldZone = document.getElementById('playerFieldZone');
+			const scenarioZone = document.getElementById('scenarioZone');
+			const commandZone = document.getElementById('commandZone');
 
 			function topCardMarkup(card) {
 				return card ? `<img src="${card.imagem}" alt="${card.nome}">` : '';
@@ -558,8 +541,6 @@
 				exilePreview.innerHTML = topCardMarkup(state.exile[state.exile.length - 1]);
 				discardCount.textContent = state.discard.length;
 				exileCount.textContent = state.exile.length;
-				leftDiscardBox.textContent = `Descarte ${state.discard.length}`;
-				leftExileBox.textContent = `Exílio ${state.exile.length}`;
 			}
 
 			function renderHand() {
@@ -592,6 +573,42 @@
 				return state.hand.splice(index, 1)[0];
 			}
 
+			function clamp(value, min, max) {
+				return Math.max(min, Math.min(max, value));
+			}
+
+			function getDropPosition(zone, event) {
+				const rect = zone.getBoundingClientRect();
+				const cardWidth = 92;
+				const cardHeight = 126;
+				const left = clamp(event.clientX - rect.left - (cardWidth / 2), 4, Math.max(4, rect.width - cardWidth - 4));
+				const top = clamp(event.clientY - rect.top - (cardHeight / 2), 4, Math.max(4, rect.height - cardHeight - 4));
+
+				return { left, top };
+			}
+
+			function getClosestCreatureCard(zone, event) {
+				const cards = [...zone.querySelectorAll('.play-zone-card')];
+				if (!cards.length) return null;
+
+				let closestCard = null;
+				let closestDistance = Number.POSITIVE_INFINITY;
+
+				cards.forEach((cardEl) => {
+					const rect = cardEl.getBoundingClientRect();
+					const centerX = rect.left + (rect.width / 2);
+					const centerY = rect.top + (rect.height / 2);
+					const distance = Math.hypot(event.clientX - centerX, event.clientY - centerY);
+
+					if (distance < closestDistance) {
+						closestDistance = distance;
+						closestCard = cardEl;
+					}
+				});
+
+				return closestCard;
+			}
+
 			function drawCard() {
 				if (!state.drawPile.length) return;
 				const card = state.drawPile.shift();
@@ -600,13 +617,48 @@
 				renderDeckPreview();
 			}
 
-			function placeCardInZone(zone, card) {
-				zone.innerHTML = `
-					<div class="play-slot-card">
-						<img src="${card.imagem}" alt="${card.nome}">
-						<div class="play-card-meta">${card.tipo}</div>
-					</div>
+			function createZoneCard(card, position = null) {
+				const cardEl = document.createElement('div');
+				cardEl.className = 'play-zone-card';
+				cardEl.dataset.uid = card.uid;
+				if (position) {
+					cardEl.style.left = `${position.left}px`;
+					cardEl.style.top = `${position.top}px`;
+				}
+				cardEl.innerHTML = `
+					<img src="${card.imagem}" alt="${card.nome}">
+					<div class="play-card-meta">${card.tipo}</div>
 				`;
+				return cardEl;
+			}
+
+			function clearEmptyText(zone) {
+				const emptyText = zone.querySelector('.play-empty-text');
+				if (emptyText) emptyText.remove();
+			}
+
+			function placeInFreeZone(zone, card, event) {
+				clearEmptyText(zone);
+
+				if (['habilidade', 'item'].includes(card.tipo)) {
+					const creatureCard = getClosestCreatureCard(zone, event);
+					if (creatureCard) {
+						const stack = creatureCard.querySelector('.play-zone-stack') || (() => {
+							const el = document.createElement('div');
+							el.className = 'play-zone-stack';
+							creatureCard.appendChild(el);
+							return el;
+						})();
+
+						const attachment = document.createElement('div');
+						attachment.className = 'play-attachment';
+						attachment.innerHTML = `<img src="${card.imagem}" alt="${card.nome}">`;
+						stack.appendChild(attachment);
+						return;
+					}
+				}
+
+				zone.appendChild(createZoneCard(card, getDropPosition(zone, event)));
 			}
 
 			function attachDropHandlers() {
@@ -626,44 +678,38 @@
 						const card = removeCardFromHand(state.draggingId);
 						if (!card) return;
 
-						const zoneType = zone.dataset.zone;
-						if (zoneType === 'command') {
-							state.discard.push(card);
-							renderHand();
-							renderPiles();
-							return;
+						switch (zone.dataset.zone) {
+							case 'discard':
+							case 'command':
+								state.discard.push(card);
+								renderHand();
+								renderPiles();
+								return;
+							case 'exile':
+								state.exile.push(card);
+								renderHand();
+								renderPiles();
+								return;
+							case 'scenario':
+								if (card.tipo !== 'cenario') {
+									state.hand.push(card);
+									renderHand();
+									return;
+								}
+								zone.innerHTML = '';
+								placeInFreeZone(zone, card, event);
+								renderHand();
+								return;
+							case 'creature':
+								if (!['criatura', 'habilidade', 'item'].includes(card.tipo)) {
+									state.hand.push(card);
+									renderHand();
+									return;
+								}
+								placeInFreeZone(zone, card, event);
+								renderHand();
+								return;
 						}
-
-						if (zoneType === 'scenario' && card.tipo !== 'cenario') {
-							state.hand.push(card);
-							renderHand();
-							return;
-						}
-
-						if (zoneType === 'creature' && !['criatura', 'habilidade', 'item'].includes(card.tipo)) {
-							state.hand.push(card);
-							renderHand();
-							return;
-						}
-
-						if (zoneType === 'creature' && ['habilidade', 'item'].includes(card.tipo) && zone.querySelector('.play-slot-card')) {
-							const stack = zone.querySelector('.play-slot-stack') || (() => {
-								const el = document.createElement('div');
-								el.className = 'play-slot-stack';
-								zone.appendChild(el);
-								return el;
-							})();
-
-							const attachment = document.createElement('div');
-							attachment.className = 'play-attachment';
-							attachment.innerHTML = `<img src="${card.imagem}" alt="${card.nome}">`;
-							stack.appendChild(attachment);
-							renderHand();
-							return;
-						}
-
-						placeCardInZone(zone, card);
-						renderHand();
 					});
 				});
 			}
